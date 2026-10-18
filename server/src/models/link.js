@@ -13,6 +13,10 @@ const linkSchema = new mongoose.Schema({
 		type: String,
 		default: "",
 	},
+	user: {
+		type: mongoose.Schema.Types.ObjectId,
+		ref: "User",
+	},
 });
 
 linkSchema.set("toJSON", {
