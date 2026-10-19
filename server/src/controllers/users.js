@@ -1,6 +1,11 @@
 import bcrypt from "bcrypt";
 import User from "../models/user.js";
 
+const getAllUsers = async (req, res) => {
+	const users = await User.find({}).populate("links");
+	res.json(users);
+};
+
 const createUser = async (req, res) => {
 	const { username, password } = req.body;
 
@@ -15,4 +20,4 @@ const createUser = async (req, res) => {
 	res.status(201).json(savedUser);
 };
 
-export { createUser };
+export { createUser, getAllUsers };
