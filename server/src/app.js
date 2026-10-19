@@ -11,7 +11,7 @@ app.use(express.json());
 
 //routes
 app.use("/links", linkRouter);
-app.use("/users", userRouter);
+app.use("/", userRouter);
 
 //custom middlewares
 app.use(unknownEndpoint);
