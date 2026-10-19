@@ -11,7 +11,7 @@ const linkSchema = new mongoose.Schema({
 	},
 	category: {
 		type: String,
-		default: "",
+		default: "none",
 	},
 	user: {
 		type: mongoose.Schema.Types.ObjectId,

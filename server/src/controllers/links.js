@@ -1,7 +1,8 @@
 import Link from "../models/link.js";
+import User from "../models/user.js";
 
 const getAllLinks = async (req, res) => {
-	const links = await Link.find({});
+	const links = await Link.find({}).populate("user", { username: 1 });
 	res.json(links);
 };
 
@@ -13,15 +14,26 @@ const getLinkById = async (req, res) => {
 };
 
 const createLink = async (req, res) => {
-	const { title, url, category } = req.body;
+	const { title, url, category, userId } = req.body;
+
+	const user = await User.findById(userId);
+
+	if (!user) {
+		return res
+			.status(400)
+			.json({ error: "UserId is not valid or missing" });
+	}
 
 	const newLink = new Link({
 		title,
 		url,
 		category,
+		user: user._id,
 	});
 
 	const savedLink = await newLink.save();
+	user.links = [...user.links, savedLink._id];
+	await user.save();
 	res.status(201).json(savedLink);
 };
 
