@@ -9,13 +9,21 @@ const errorHandler = (error, req, res, next) => {
 
 	if (error.name === "CastError") {
 		return res.status(400).json({ error: "malformed id" });
-	} else if (error.name === "ValidationError") {
+	}
+
+	if (error.name === "ValidationError") {
 		return res.status(400).json({ error: error.message });
-	} else if (
+	}
+
+	if (
 		error.name === "MongoServerError" &&
 		error.message.includes("E11000 duplicate key error collection")
 	) {
 		return res.status(400).json({ error: "username is already taken" });
+	}
+
+	if (error.message.includes("data and hash arguments required")) {
+		return res.status(400).json({ error: "password must be provided" });
 	}
 };
 
