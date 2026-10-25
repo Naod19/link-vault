@@ -6,13 +6,15 @@ import {
 	getLinkById,
 	updateLink,
 } from "../controllers/links.js";
+import { getToken, verifyLink } from "../utils/middleware.js";
 
 const linkRouter = express.Router();
+linkRouter.use(getToken);
 
 linkRouter.get("/", getAllLinks);
-linkRouter.get("/:id", getLinkById);
+linkRouter.get("/:id", verifyLink, getLinkById);
 linkRouter.post("/", createLink);
-linkRouter.put("/:id", updateLink);
-linkRouter.delete("/:id", deleteLink);
+linkRouter.put("/:id", verifyLink, updateLink);
+linkRouter.delete("/:id", verifyLink, deleteLink);
 
 export default linkRouter;

@@ -2,26 +2,24 @@ import Link from "../models/link.js";
 import User from "../models/user.js";
 
 const getAllLinks = async (req, res) => {
-	const links = await Link.find({}).populate("user", { username: 1 });
+	const links = await Link.find({ user: req.user.id }).populate("user", {
+		username: 1,
+	});
 	res.json(links);
 };
 
 const getLinkById = async (req, res) => {
-	const id = req.params.id;
-
-	const link = await Link.findById(id);
-	res.json(link);
+	res.json(req.link);
 };
 
 const createLink = async (req, res) => {
-	const { title, url, category, userId } = req.body;
+	const { title, url, category } = req.body;
+	const { id } = req.user;
 
-	const user = await User.findById(userId);
+	const user = await User.findById(id);
 
 	if (!user) {
-		return res
-			.status(400)
-			.json({ error: "UserId is not valid or missing" });
+		return res.status(400).json({ error: "User is not valid or missing" });
 	}
 
 	const newLink = new Link({
@@ -32,20 +30,13 @@ const createLink = async (req, res) => {
 	});
 
 	const savedLink = await newLink.save();
-	user.links = [...user.links, savedLink._id];
-	await user.save();
 	res.status(201).json(savedLink);
 };
 
 const updateLink = async (req, res) => {
-	const id = req.params.id;
 	const { title, url, category } = req.body;
 
-	const linkToUpdate = await Link.findById(id);
-
-	if (!linkToUpdate) {
-		return res.status(404).json({ error: "link not found" });
-	}
+	const linkToUpdate = req.link;
 
 	if (title !== undefined) linkToUpdate.title = title;
 	if (url !== undefined) linkToUpdate.url = url;
@@ -56,11 +47,7 @@ const updateLink = async (req, res) => {
 };
 
 const deleteLink = async (req, res) => {
-	const id = req.params.id;
-	const result = await Link.findByIdAndDelete(id);
-	if (result === null) {
-		res.status(404).json({ error: "link not found" });
-	}
+	await req.link.deleteOne();
 	res.status(204).end();
 };
 

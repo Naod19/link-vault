@@ -11,12 +11,6 @@ const userSchema = new mongoose.Schema({
 		minLength: 6,
 		required: true,
 	},
-	links: [
-		{
-			type: mongoose.Schema.Types.ObjectId,
-			ref: "Link",
-		},
-	],
 });
 
 userSchema.set("toJSON", {

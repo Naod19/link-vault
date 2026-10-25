@@ -1,3 +1,5 @@
+import jwt from "jsonwebtoken";
+import Link from "../models/link.js";
 import * as logger from "./logger.js";
 
 const unknownEndpoint = (req, res) => {
@@ -25,6 +27,36 @@ const errorHandler = (error, req, res, next) => {
 	if (error.message.includes("data and hash arguments required")) {
 		return res.status(400).json({ error: "password must be provided" });
 	}
+
+	next();
 };
 
-export { errorHandler, unknownEndpoint };
+const getToken = (req, res, next) => {
+	const authHeader = req.get("authorization");
+
+	if (!authHeader || !authHeader.startsWith("Bearer ")) {
+		return res.status(401).json({ error: "token missing" });
+	}
+	const token = authHeader.split(" ")[1];
+
+	jwt.verify(token, process.env.TOKEN_SECRET, (err, user) => {
+		if (err) return res.status(403).json({ error: "Token not valid", err });
+
+		req.user = user;
+		next();
+	});
+};
+
+const verifyLink = async (req, res, next) => {
+	const link = await Link.findOne({ _id: req.params.id, user: req.user.id });
+
+	if (!link) {
+		return res.status(404).json({ error: "Link not found" });
+	}
+
+	req.link = link;
+
+	next();
+};
+
+export { errorHandler, getToken, unknownEndpoint, verifyLink };
