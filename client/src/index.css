@@ -1,1 +1,37 @@
 @import "tailwindcss";
+
+/* Fonts */
+@font-face {
+  font-family: "Playwrite";
+  src: url("assets/PlaywriteITTrad-VariableFont_wght.ttf") format(truetype);
+  font-weight: 100 400;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Quicksand";
+  src: url("assets/Quicksand-Variable.ttf") format(truetype);
+  font-weight: 300 700;
+  font-display: swap;
+}
+
+@theme {
+  --font-quicksand: "Quicksand", sans-serif;
+  --font-play: "Playwrite", sans-serif;
+  --color-primary: #188fa7;
+  --color-bg: #fff;
+  --color-text: #080705;
+}
+
+@layer base {
+  body {
+    font-family: var(--font-play);
+    font-weight: 400;
+  }
+
+  p,
+  span {
+    font-family: var(--font-quicksand);
+    font-weight: 400;
+  }
+}
