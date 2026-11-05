@@ -10,6 +10,12 @@ const getAllUsers = async (req, res) => {
 const createUser = async (req, res) => {
 	const { username, password } = req.body;
 
+	if (!password || password.length < 8) {
+		return res
+			.status(400)
+			.json({ error: "Password must at least be 8 characters long" });
+	}
+
 	const passwordHash = await bcrypt.hash(password, 10);
 
 	const newUser = new User({
