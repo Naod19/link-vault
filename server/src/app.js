@@ -10,8 +10,8 @@ app.use(cors());
 app.use(express.json());
 
 //routes
-app.use("/links", linkRouter);
-app.use("/", authRouter);
+app.use("/api/links", linkRouter);
+app.use("/api/auth", authRouter);
 
 //custom middlewares
 app.use(unknownEndpoint);
